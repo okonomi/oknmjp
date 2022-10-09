@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "wrangler pages dev ./dist",
     "astro": "astro"
   },
   "dependencies": {
@@ -16,5 +16,8 @@
     "@astrojs/rss": "^1.0.2",
     "@astrojs/sitemap": "^1.0.0",
     "astro": "^1.4.6"
+  },
+  "devDependencies": {
+    "wrangler": "^2.1.10"
   }
 }
