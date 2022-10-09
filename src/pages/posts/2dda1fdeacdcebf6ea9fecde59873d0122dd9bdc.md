@@ -2,6 +2,8 @@
 layout: "../../layouts/BlogPost.astro"
 title: "onkcopをejectした"
 pubDate: "2019-12-30 14:11"
+tags:
+  - ブログ開発日記
 ---
 [https://github.com/okonomi/blg/commit/b2d92034725e0395daf7de2958a971124899ddc8](https://github.com/okonomi/blg/commit/b2d92034725e0395daf7de2958a971124899ddc8)
 
