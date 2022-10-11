@@ -3,7 +3,7 @@ import { format } from "date-fns"
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION, SITE_IMAGE } from '../config';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../config';
 
 // Use Astro.glob() to fetch all posts, and then sort them by date.
 const posts = (await Astro.glob('./posts/*.{md,mdx}')).sort(
@@ -14,7 +14,7 @@ const posts = (await Astro.glob('./posts/*.{md,mdx}')).sort(
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image={SITE_IMAGE} pageType="website" />
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} pageType="website" />
     <style>
       ul {
         list-style-type: none;
