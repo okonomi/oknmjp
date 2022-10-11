@@ -7,10 +7,10 @@ export interface Props {
   title: string;
   description: string;
   pageType: string;
-  image?: string;
+  image: string;
 }
 
-const { title, description, image = "https://www.gravatar.com/avatar/11148320361c31b9e19075ccec589408?size=200", pageType } = Astro.props;
+const { title, description, image, pageType } = Astro.props;
 ---
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
