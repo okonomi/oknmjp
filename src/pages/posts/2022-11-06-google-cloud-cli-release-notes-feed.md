@@ -1,13 +1,18 @@
 ---
 layout: "../../layouts/BlogPost.astro"
-title: "Google Cloud SDKのRSSを作った"
+title: "Google Cloud CLIのRSSを作った"
 pubDate: "2022-11-06 23:30"
 ---
-# Google Cloud SDKの更新情報を取得するのがつらい問題
 
-Google CloudのCloud SDKは知る限りはRSSフィードなどは提供されてない。
+- 2022-11-07 更新: Google Cloud SDKをGoogle Cloud CLIに表記統一
 
-[Cloud SDK - Libraries and Command Line Tools  |  Google Cloud](https://cloud.google.com/sdk)
+---
+
+# Google Cloud CLIの更新情報を取得するのがつらい問題
+
+Google Cloud CLI(gcloud CLI)は知る限りはRSSフィードなどは提供されてない。
+
+[gcloud CLI の概要  |  Google Cloud CLI のドキュメント](https://cloud.google.com/sdk/gcloud?hl=ja)
 
 公式には更新情報はふたとおり提供されている。
 
@@ -17,24 +22,24 @@ Google CloudのCloud SDKは知る限りはRSSフィードなどは提供され�
 Google グループはかつてはRSSフィードが提供されてたけど今はない。グループに参加してメールを受信すればいいんだけど、そこからCIをトリガーしたりSlackに通知したりがひと工夫必要で面倒。
 リリースノートページは最初期の0.9.0から最新版(執筆時点408.0.1)までの全バージョンの更新内容が羅列された超絶重いページになっており、開くたびにChromeがしばらく反応しなくなったりしてつらい。
 
-# Google Cloud SDKのRSSを作った
+# Google Cloud CLIのRSSを作った
 
-というようにCloud SDKのアップデート情報を得るのが面倒な状況なので、RSSを作ってみた。
+というようにGoogle Cloud CLIのアップデート情報を得るのが面倒な状況なので、RSSを作ってみた。
 
-[RSS feed for Google Cloud SDK Release Notes](https://okonomi.github.io/google-cloud-sdk-release-notes-feed/)
+[RSS for Google Cloud CLI Release Notes](https://okonomi.github.io/google-cloud-cli-release-notes-feed/)
 
 毎日リリースノートページを取得してJSONフィード形式に変換してコミットするというのをGithub Actionsで動かしてる。
 JSONなので`jq`で加工すれば最新版のバージョン番号を取得するなども比較的やりやすい。
 
 ```
-curl "https://okonomi.github.io/google-cloud-sdk-release-notes-feed/feeds/0.json" | jq -r ".items[0] | .title" | sed -E "s/^([0-9]+.[0-9]+.[0-9]+).*/\1/"
+curl "https://okonomi.github.io/google-cloud-cli-release-notes-feed/feeds/0.json" | jq -r ".items[0] | .title" | sed -E "s/^([0-9]+.[0-9]+.[0-9]+).*/\1/"
 # 408.0.1
 ```
 
 …でも手間ではあるのでそれも出力することにした。
 
 ```
-curl https://okonomi.github.io/google-cloud-sdk-release-notes-feed/latest.txt
+curl https://okonomi.github.io/google-cloud-cli-release-notes-feed/latest.txt
 # 408.0.1
 ```
 
