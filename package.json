@@ -17,7 +17,7 @@
     "remark-breaks": "^3.0.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^3.16.0",
+    "@cloudflare/workers-types": "^4.20221111.1",
     "wrangler": "^2.1.10"
   },
   "packageManager": "npm@8.19.3"
