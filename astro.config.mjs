@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import remarkBreaks from "remark-breaks"
 import mdx from '@astrojs/mdx';
 
 import sitemap from '@astrojs/sitemap';
@@ -7,16 +8,12 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://oknm.jp',
   integrations: [
-    mdx({
-      extendPlugins: 'astroDefaults'
-    }),
+    mdx(),
     sitemap()
   ],
   markdown: {
     remarkPlugins: [
-      "remark-breaks",
-      "remark-gfm",
-      "remark-smartypants"
+      remarkBreaks
     ]
   }
 });
