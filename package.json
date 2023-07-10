@@ -13,7 +13,7 @@
     "@astrojs/rss": "^2.4.3",
     "@astrojs/sitemap": "^1.0.1",
     "astro": "^2.0.6",
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "remark-breaks": "^3.0.2"
   },
   "devDependencies": {
