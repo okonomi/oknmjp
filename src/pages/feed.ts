@@ -1,7 +1,7 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getCollection } from "astro:content"
-import { SITE_TITLE, SITE_DESCRIPTION } from '../config';
+import { SITE_TITLE, SITE_DESCRIPTION } from '@/config';
 
 export async function get(context: APIContext) {
   const posts = (await getCollection("posts")).sort(

@@ -1,5 +1,5 @@
 ---
-layout: "../../layouts/BlogPost.astro"
+layout: "@/layouts/BlogPost.astro"
 title: "Astro 3.0にアップデートした"
 pubDate: "2023-09-14"
 ---
