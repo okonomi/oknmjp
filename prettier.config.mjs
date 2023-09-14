@@ -2,13 +2,14 @@
 export default {
   semi: false,
   singleQuote: false,
-  plugins: ['prettier-plugin-astro'],
+  printWidth: 120,
+  plugins: ["prettier-plugin-astro"],
   overrides: [
     {
-      files: '*.astro',
+      files: "*.astro",
       options: {
-        parser: 'astro',
+        parser: "astro",
       },
     },
   ],
-};
+}
