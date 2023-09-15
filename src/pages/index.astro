@@ -1,17 +1,15 @@
 ---
 import { format } from "date-fns"
-import BaseHead from '@/components/BaseHead.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '@/config';
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 import { getCollection } from "astro:content"
 
-const posts = (await getCollection("posts")).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} pageType="website" />
@@ -38,14 +36,14 @@ const posts = (await getCollection("posts")).sort(
     <main>
       <section>
         <ul>
-          {posts.map((post) => (
-            <li>
-              <time datetime={post.data.pubDate.toISOString()}>
-                {format(post.data.pubDate, "yyyy-MM-dd")}
-              </time>
-              <a href={`/posts/${post.slug}`}>{post.data.title}</a>
-            </li>
-          ))}
+          {
+            posts.map((post) => (
+              <li>
+                <time datetime={post.data.pubDate.toISOString()}>{format(post.data.pubDate, "yyyy-MM-dd")}</time>
+                <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+              </li>
+            ))
+          }
         </ul>
       </section>
     </main>
