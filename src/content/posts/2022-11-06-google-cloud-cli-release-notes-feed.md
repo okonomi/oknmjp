@@ -1,6 +1,7 @@
 ---
 title: "Google Cloud CLIのRSSを作った"
 pubDate: "2022-11-06 23:30"
+updatedDate: "2022-11-07 23:01"
 ---
 
 - 2022-11-07 更新: Google Cloud SDKをGoogle Cloud CLIに表記統一
