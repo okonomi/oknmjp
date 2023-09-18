@@ -1,5 +1,4 @@
 ---
-layout: "@/layouts/BlogPost.astro"
 title: "onkcopをejectした"
 pubDate: "2019-12-30 14:11"
 tags:

@@ -1,5 +1,4 @@
 ---
-layout: "@/layouts/BlogPost.astro"
 title: "Google Cloud CLIのRSSを作った"
 pubDate: "2022-11-06 23:30"
 ---
