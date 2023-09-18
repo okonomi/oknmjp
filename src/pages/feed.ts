@@ -2,6 +2,10 @@ import rss from "@astrojs/rss"
 import type { APIContext } from "astro"
 import { getCollection } from "astro:content"
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import MarkdownIt from "markdown-it"
+import sanitizeHTML from "sanitize-html"
+
+const parser = new MarkdownIt()
 
 export async function GET(context: APIContext) {
   const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -16,7 +20,7 @@ export async function GET(context: APIContext) {
       description: post.data.description,
       link: `/posts/${post.slug}`,
       date: post.data.pubDate,
-      content: post.body,
+      content: sanitizeHTML(parser.render(post.body)),
     })),
   })
 }
