@@ -13,7 +13,7 @@
     "@astrojs/rss": "^4.0.1",
     "@astrojs/sitemap": "^3.0.4",
     "@types/markdown-it": "^13.0.1",
-    "@types/sanitize-html": "^2.9.3",
+    "@types/sanitize-html": "^2.9.5",
     "astro": "^4.1.1",
     "date-fns": "^2.30.0",
     "markdown-it": "^13.0.1",
