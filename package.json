@@ -18,7 +18,7 @@
     "date-fns": "^2.30.0",
     "markdown-it": "^13.0.1",
     "remark-breaks": "^4.0.0",
-    "sanitize-html": "^2.11.0"
+    "sanitize-html": "^2.12.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",
