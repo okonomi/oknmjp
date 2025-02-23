@@ -29,6 +29,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.14.1",
+    "remark-heading-shift": "^1.1.2",
     "wrangler": "^3.68.0"
   },
   "packageManager": "pnpm@10.4.1"

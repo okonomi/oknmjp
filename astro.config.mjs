@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config"
 import remarkBreaks from "remark-breaks"
+import remarkHeadingShift from "remark-heading-shift"
 import mdx from "@astrojs/mdx"
 
 import sitemap from "@astrojs/sitemap"
@@ -12,7 +13,10 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
 
   markdown: {
-    remarkPlugins: [remarkBreaks],
+    remarkPlugins: [
+      remarkBreaks,
+      [remarkHeadingShift, 1],
+    ],
   },
 
   vite: {
