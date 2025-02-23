@@ -17,25 +17,26 @@ const { title, description = "", pubDate, updatedDate, heroImage } = Astro.props
   <head>
     <BaseHead title={`${title} | ${SITE_TITLE}`} description={description} pageType="article" />
   </head>
-
   <body>
-    <Header />
-    <main>
-      <article class="prose lg:prose-lg mx-auto">
-        {heroImage && <Image src={heroImage} alt="" width={720} height={360} />}
-        <h1 class="title">{title}</h1>
-        {pubDate && <FormattedDate date={pubDate} />}
-        {
-          updatedDate && (
-            <div>
-              Last updated on <FormattedDate date={updatedDate} />
-            </div>
-          )
-        }
-        <hr />
-        <slot />
-      </article>
-    </main>
-    <Footer />
+    <div class="w-full max-w-2xl px-4 mx-auto">
+      <Header />
+      <main>
+        <article class="prose lg:prose-lg mx-auto">
+          {heroImage && <Image src={heroImage} alt="" width={720} height={360} />}
+          <h1 class="title">{title}</h1>
+          {pubDate && <FormattedDate date={pubDate} />}
+          {
+            updatedDate && (
+              <div>
+                Last updated on <FormattedDate date={updatedDate} />
+              </div>
+            )
+          }
+          <hr />
+          <slot />
+        </article>
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>
