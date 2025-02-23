@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250214.0",
+    "@tailwindcss/typography": "^0.5.16",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.14.1",
     "wrangler": "^3.68.0"
