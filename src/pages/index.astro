@@ -1,52 +1,26 @@
 ---
 import { format } from "date-fns"
-import BaseHead from "@/components/BaseHead.astro"
-import Header from "@/components/Header.astro"
-import Footer from "@/components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+
 import { getCollection } from "astro:content"
+
+import Layout from "@/layouts/Blog.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 
 const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 ---
-
-<!doctype html>
-<html lang="ja">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} pageType="website" />
-    <style>
-      ul {
-        list-style-type: none;
-        padding: unset;
-      }
-      ul li {
-        display: flex;
-      }
-      ul li time {
-        flex: 0 0 130px;
-        font-style: italic;
-        color: #595959;
-      }
-      ul li a:visited {
-        color: #8e32dc;
-      }
-    </style>
-  </head>
-  <body>
-    <Header />
-    <main>
-      <section>
-        <ul>
-          {
-            posts.map((post) => (
-              <li>
-                <time datetime={post.data.pubDate.toISOString()}>{format(post.data.pubDate, "yyyy-MM-dd")}</time>
-                <a href={`/posts/${post.slug}`}>{post.data.title}</a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </main>
-    <Footer />
-  </body>
-</html>
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION} pageType="website">
+  <main class="pb-8">
+    <div class="space-y-2">
+      {posts.map((post) => (
+        <div class="flex flex-col sm:flex-row">
+          <time class="text-gray-600 shrink-0 w-[100px]" datetime={post.data.pubDate.toISOString()}>
+            {format(post.data.pubDate, "yyyy-MM-dd")}
+          </time>
+          <a href={`/posts/${post.slug}`} class="text-blue-600 hover:underline">
+            {post.data.title}
+          </a>
+        </div>
+      ))}
+    </div>
+  </main>
+</Layout>

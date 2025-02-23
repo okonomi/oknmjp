@@ -1,6 +1,10 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content"
-import BlogPost from "@/layouts/BlogPost.astro"
+import { Image } from "astro:assets"
+
+import { SITE_TITLE } from "@/config"
+import Layout from "@/layouts/Blog.astro"
+import FormattedDate from "@/components/FormattedDate.astro"
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts")
@@ -14,8 +18,29 @@ type Props = CollectionEntry<"posts">
 
 const post = Astro.props
 const { Content } = await post.render()
+// const { title, description, pubDate, updatedDate, heroImage } = post.data
+const title = `${post.data.title} | ${SITE_TITLE}`
 ---
 
-<BlogPost {...post.data}>
-  <Content />
-</BlogPost>
+<Layout title={title} description={post.data.description ?? ""} pageType="article">
+  <article class="prose lg:prose-lg prose-img:rounded-lg prose-ul:m-0 prose-li:m-0 mx-auto">
+    {post.data.heroImage && <div class="not-prose mb-8">
+      <div class="not-prose mb-8">
+        <Image
+          src={post.data.heroImage}
+          alt=""
+          inferSize
+          class="aspect-video object-cover object-center rounded-lg"
+          priority
+        />
+      </div>
+    </div>}
+
+    <div class="text-sm text-gray-600">
+      <FormattedDate date={post.data.pubDate} />
+    </div>
+    <h1>{post.data.title}</h1>
+
+    <Content />
+  </article>
+</Layout>
