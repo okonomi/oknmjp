@@ -4,9 +4,9 @@ pubDate: "2022-11-06 23:30"
 updatedDate: "2022-11-07 23:01"
 ---
 
-- 2022-11-07 更新: Google Cloud SDKをGoogle Cloud CLIに表記統一
+### 更新履歴
 
----
+- 2022-11-07: Google Cloud SDKをGoogle Cloud CLIに表記統一
 
 # Google Cloud CLIの更新情報を取得するのがつらい問題
 
