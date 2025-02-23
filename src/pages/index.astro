@@ -13,40 +13,25 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
 <html lang="ja">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} pageType="website" />
-    <style>
-      ul {
-        list-style-type: none;
-        padding: unset;
-      }
-      ul li {
-        display: flex;
-      }
-      ul li time {
-        flex: 0 0 130px;
-        font-style: italic;
-        color: #595959;
-      }
-      ul li a:visited {
-        color: #8e32dc;
-      }
-    </style>
   </head>
   <body>
-    <Header />
-    <main>
-      <section>
-        <ul>
-          {
-            posts.map((post) => (
-              <li>
-                <time datetime={post.data.pubDate.toISOString()}>{format(post.data.pubDate, "yyyy-MM-dd")}</time>
-                <a href={`/posts/${post.slug}`}>{post.data.title}</a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </main>
-    <Footer />
+    <div class="w-full max-w-2xl px-4 mx-auto">
+      <Header />
+      <main>
+        <section>
+          <ul>
+            {
+              posts.map((post) => (
+                <li>
+                  <time datetime={post.data.pubDate.toISOString()}>{format(post.data.pubDate, "yyyy-MM-dd")}</time>
+                  <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>
