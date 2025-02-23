@@ -13,10 +13,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
 
   markdown: {
-    remarkPlugins: [
-      remarkBreaks,
-      [remarkHeadingShift, 1],
-    ],
+    remarkPlugins: [remarkBreaks, [remarkHeadingShift, 1]],
   },
 
   vite: {
