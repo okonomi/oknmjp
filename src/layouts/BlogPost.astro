@@ -16,22 +16,12 @@ const { title, description = "", pubDate, updatedDate, heroImage } = Astro.props
 <html lang="ja">
   <head>
     <BaseHead title={`${title} | ${SITE_TITLE}`} description={description} pageType="article" />
-    <style>
-      .title {
-        font-size: 2em;
-        margin: 0.25em 0 0;
-      }
-      hr {
-        border-top: 1px solid #ddd;
-        margin: 1rem 0;
-      }
-    </style>
   </head>
 
   <body>
     <Header />
     <main>
-      <article>
+      <article class="prose lg:prose-lg mx-auto">
         {heroImage && <Image src={heroImage} alt="" width={720} height={360} />}
         <h1 class="title">{title}</h1>
         {pubDate && <FormattedDate date={pubDate} />}
