@@ -20,7 +20,7 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
       <main class="py-8">
         <div class="space-y-2">
           {posts.map((post) => (
-            <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex flex-col sm:flex-row">
               <time class="text-gray-600 shrink-0 w-[100px]" datetime={post.data.pubDate.toISOString()}>
                 {format(post.data.pubDate, "yyyy-MM-dd")}
               </time>
