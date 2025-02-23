@@ -15,10 +15,10 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8(astro@5.3.0(rollup@4.34.8)(typescript@5.7.3)(yaml@2.7.0))
       '@astrojs/rss':
-        specifier: ^4.0.5
+        specifier: ^4.0.11
         version: 4.0.11
       '@astrojs/sitemap':
-        specifier: ^3.1.4
+        specifier: ^3.2.1
         version: 3.2.1
       '@types/markdown-it':
         specifier: ^14.1.1
