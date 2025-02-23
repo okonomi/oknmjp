@@ -24,10 +24,20 @@ const title = `${post.data.title} | ${SITE_TITLE}`
 
 <Layout title={title} description={post.data.description ?? ""} pageType="article">
   <article class="prose lg:prose-lg prose-img:rounded-lg prose-ul:m-0 prose-li:m-0 mx-auto">
-    {post.data.heroImage && <Image src={post.data.heroImage} alt="" width={720} height={360} />}
+    {post.data.heroImage && <div class="not-prose mb-8">
+      <div class="not-prose mb-8">
+        <Image
+          src={post.data.heroImage}
+          alt=""
+          inferSize
+          class="aspect-video object-cover object-center rounded-lg"
+          priority
+        />
+      </div>
+    </div>}
 
     <div class="text-sm text-gray-600">
-      {post.data.pubDate && <FormattedDate date={post.data.pubDate} />}
+      <FormattedDate date={post.data.pubDate} />
     </div>
     <h1>{post.data.title}</h1>
 
