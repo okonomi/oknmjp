@@ -22,7 +22,7 @@
     "markdown-it": "^14.1.0",
     "remark-breaks": "^4.0.0",
     "sanitize-html": "^2.13.0",
-    "tailwindcss": "^4.0.9",
+    "tailwindcss": "^4.0.14",
     "typescript": "^5.8.2"
   },
   "devDependencies": {
