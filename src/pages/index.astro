@@ -1,29 +1,27 @@
 ---
-import { getCollection } from 'astro:content';
-import Layout from '@/layouts/Blog.astro';
-import FormattedDate from '@/components/FormattedDate.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts';
+import { getCollection } from "astro:content"
+import Layout from "@/layouts/Blog.astro"
+import FormattedDate from "@/components/FormattedDate.astro"
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts"
 
-const posts = (await getCollection('posts')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION} pageType="website">
-	<main class="pb-8">
-		<section class="space-y-2">
-			{
-				posts.map((post) => (
-					<div class="flex flex-col sm:flex-row">
-						<time class="text-gray-600 shrink-0 w-[100px]" datetime={post.data.pubDate.toISOString()}>
-							<FormattedDate date={post.data.pubDate} />
-						</time>
-						<a href={`/posts/${post.id}/`} class="text-blue-600 hover:underline">
-							{post.data.title}
-						</a>
-					</div>
-				))
-			}
-		</section>
-	</main>
+  <main class="pb-8">
+    <section class="space-y-2">
+      {
+        posts.map((post) => (
+          <div class="flex flex-col sm:flex-row">
+            <time class="text-gray-600 shrink-0 w-[100px]" datetime={post.data.pubDate.toISOString()}>
+              <FormattedDate date={post.data.pubDate} />
+            </time>
+            <a href={`/posts/${post.id}/`} class="text-blue-600 hover:underline">
+              {post.data.title}
+            </a>
+          </div>
+        ))
+      }
+    </section>
+  </main>
 </Layout>
