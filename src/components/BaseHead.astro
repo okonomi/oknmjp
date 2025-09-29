@@ -9,12 +9,13 @@ import { SITE_TITLE } from '@/consts';
 interface Props {
 	title: string;
 	description: string;
+  pageType: string;
 	image?: ImageMetadata;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = FallbackImage, pageType } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -43,7 +44,7 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content={pageType} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
