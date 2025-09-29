@@ -13,7 +13,7 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
       {
         posts.map((post) => (
           <div class="flex flex-col sm:flex-row">
-            <time class="text-gray-600 shrink-0 w-[100px]" datetime={post.data.pubDate.toISOString()}>
+            <time class="w-[100px] shrink-0 text-gray-600" datetime={post.data.pubDate.toISOString()}>
               <FormattedDate date={post.data.pubDate} />
             </time>
             <a href={`/posts/${post.id}/`} class="text-blue-600 hover:underline">
