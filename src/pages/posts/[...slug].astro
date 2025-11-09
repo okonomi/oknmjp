@@ -20,6 +20,23 @@ const post = Astro.props
 const { Content } = await post.render()
 // const { title, description, pubDate, updatedDate, heroImage } = post.data
 const title = `${post.data.title} | ${SITE_TITLE}`
+if (
+  post.data.heroImage &&
+  post.data.heroImage.startsWith("http") &&
+  (!post.data.heroImageWidth || !post.data.heroImageHeight)
+) {
+  throw new Error("Remote hero images require heroImageWidth and heroImageHeight.")
+}
+type HeroImageProps =
+  | { width: number; height: number; inferSize?: false }
+  | { inferSize: true }
+
+const heroImageProps: HeroImageProps | undefined =
+  post.data.heroImageWidth && post.data.heroImageHeight
+    ? { width: post.data.heroImageWidth, height: post.data.heroImageHeight }
+    : post.data.heroImage && !post.data.heroImage.startsWith("http")
+        ? { inferSize: true as const }
+        : undefined
 ---
 
 <Layout title={title} description={post.data.description ?? ""} pageType="article">
@@ -31,7 +48,7 @@ const title = `${post.data.title} | ${SITE_TITLE}`
             <Image
               src={post.data.heroImage}
               alt=""
-              inferSize
+              {...(heroImageProps ?? { inferSize: true as const })}
               class="aspect-video object-cover object-center rounded-lg"
               priority
             />
