@@ -32,9 +32,9 @@ Worker entrypoint を持たない Cloudflare Workers Static Assets として配�
 
 ## 依存関係とランタイムの変更
 
-Astro 6 と Wrangler 4 は、現在プロジェクトで宣言している Node より新しいランタイムを要求する。アップグレードには次を含める。
+Astro 6 と Wrangler 4 は、現在プロジェクトで宣言している Node より新しいランタイムを要求する。Node は Current 系ではなく、現行 LTS の Node 24 系へ更新する。アップグレードには次を含める。
 
-- `.node-version` を Astro と Wrangler に対応する Node 22 系へ更新する。
+- `.node-version` を Node 24 LTS 系へ更新する。
 - `pnpm` で `astro`、`@astrojs/*` パッケージ、`wrangler`、`@cloudflare/workers-types`、TypeScript、関連ツールを更新する。
 - `pnpm-lock.yaml` を更新する。
 - `preview` は `wrangler pages dev ./dist` ではなく、Workers Static Assets 用の preview コマンドへ変更する。
