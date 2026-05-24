@@ -25,6 +25,7 @@
 ## Task 1: ベースライン確認
 
 **Files:**
+
 - Read: `.node-version`
 - Read: `package.json`
 - Read: `astro.config.mjs`
@@ -72,6 +73,7 @@ Expected: docs のみのコミットが 1 つ作成される。
 ## Task 2: Node と依存関係を更新する
 
 **Files:**
+
 - Modify: `.node-version`
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
@@ -123,6 +125,7 @@ Expected: Node と依存関係更新だけを含むコミットが 1 つ作成�
 ## Task 3: 静的 Astro 出力と Workers Static Assets を設定する
 
 **Files:**
+
 - Modify: `astro.config.mjs`
 - Modify: `package.json`
 - Create: `wrangler.jsonc`
@@ -158,8 +161,8 @@ export default defineConfig({
   "compatibility_date": "2026-05-24",
   "assets": {
     "directory": "./dist",
-    "html_handling": "drop-trailing-slash"
-  }
+    "html_handling": "drop-trailing-slash",
+  },
 }
 ```
 
@@ -197,6 +200,7 @@ Expected: Astro 設定、Wrangler 設定、script 変更を含むコミットが
 ## Task 4: Pages Functions をリダイレクトルールに置き換える
 
 **Files:**
+
 - Modify: `public/_redirects`
 - Delete: `functions/posts/[[slug]].ts`
 - Delete: `functions/tsconfig.json`
@@ -254,6 +258,7 @@ Expected: Pages Functions の削除とリダイレクトルール更新を含む
 ## Task 5: Workers Static Assets preview を検証する
 
 **Files:**
+
 - No planned source edits.
 - Optional modify: `public/_redirects`
 - Optional create: `src/worker.ts`
@@ -349,8 +354,8 @@ export default {
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist",
-    "html_handling": "drop-trailing-slash"
-  }
+    "html_handling": "drop-trailing-slash",
+  },
 }
 ```
 
@@ -370,6 +375,7 @@ Expected: 宣言的な Static Assets 設定では 301 要件を満たせなか�
 ## Task 6: 最終検証と cleanup
 
 **Files:**
+
 - Modify: 検証で見つかった問題を修正するために必要なファイル。
 
 - [ ] **Step 1: formatting check を実行する**
