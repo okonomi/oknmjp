@@ -18,7 +18,7 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.value
             <time class="text-gray-600 shrink-0 w-[100px]" datetime={post.data.pubDate.toISOString()}>
               {format(post.data.pubDate, "yyyy-MM-dd")}
             </time>
-            <a href={`/posts/${post.slug}`} class="text-blue-600 hover:underline">
+            <a href={`/posts/${post.id}`} class="text-blue-600 hover:underline">
               {post.data.title}
             </a>
           </div>

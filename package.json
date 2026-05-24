@@ -6,7 +6,7 @@
     "lint": "prettier --check .",
     "start": "astro dev",
     "build": "astro check && astro build",
-    "preview": "wrangler pages dev ./dist",
+    "preview": "wrangler dev",
     "astro": "astro"
   },
   "dependencies": {
