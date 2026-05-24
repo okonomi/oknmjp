@@ -1,84 +1,84 @@
-# Astro and Cloudflare Workers Static Assets Upgrade Design
+# Astro と Cloudflare Workers Static Assets へのアップグレード設計
 
-## Goal
+## 目的
 
-Upgrade the blog's technical stack while keeping the site as a static Astro blog:
+ブログを静的な Astro サイトとして維持したまま、技術スタックを更新する。
 
-- Upgrade Astro and related tooling to current versions.
-- Move deployment from Cloudflare Pages to Cloudflare Workers Static Assets.
-- Do not convert the blog into an Astro SSR or Worker application.
-- Canonicalize post URLs without trailing slashes using 301 redirects.
+- Astro と関連ツールを現在のバージョンへ更新する。
+- デプロイ先を Cloudflare Pages から Cloudflare Workers Static Assets へ移行する。
+- ブログを Astro SSR や Worker アプリケーションにはしない。
+- 投稿 URL は末尾スラッシュなしを正規 URL とし、301 リダイレクトで正規化する。
 
-## Current State
+## 現状
 
-The project currently uses Astro 5, Node 20, Wrangler 3, and Cloudflare Pages Functions. The only Pages Function is `functions/posts/[[slug]].ts`, which handles one historical article redirect and makes extensionless post URLs work when the incoming URL omits a trailing slash.
+現在のプロジェクトは Astro 5、Node 20、Wrangler 3、Cloudflare Pages Functions を使っている。Pages Function は `functions/posts/[[slug]].ts` のみで、過去記事 URL のリダイレクト 1 件と、末尾スラッシュなしでアクセスされた投稿 URL の補完を担当している。
 
-The blog content itself is static Markdown/MDX content under `src/content/posts`, with generated pages in `src/pages/posts/[...slug].astro`. There is no current need for server-side rendering, API routes, or runtime application state.
+ブログ本文は `src/content/posts` 配下の静的な Markdown/MDX で、投稿ページは `src/pages/posts/[...slug].astro` から生成されている。現時点ではサーバーサイドレンダリング、API ルート、実行時のアプリケーション状態は不要。
 
-## Chosen Approach
+## 採用方針
 
-Use Cloudflare Workers Static Assets without a Worker entrypoint.
+Worker entrypoint を持たない Cloudflare Workers Static Assets として配信する。
 
-The deployment should be configured with `wrangler.jsonc` and an `assets.directory` pointing at `./dist`. Astro should remain a static build. The Cloudflare adapter should not be added.
+デプロイ設定は `wrangler.jsonc` に置き、`assets.directory` は `./dist` を指す。Astro は静的ビルドのまま維持し、Cloudflare adapter は追加しない。
 
-Trailing-slash behavior should be handled with Workers Static Assets configuration and redirects:
+末尾スラッシュの扱いは Workers Static Assets の設定とリダイレクトで処理する。
 
-- Set `assets.html_handling` to `drop-trailing-slash`.
-- Keep redirect rules in `public/_redirects` so Astro copies them into `dist/_redirects`.
-- Add explicit 301 redirect rules for known legacy URLs.
-- Add a post URL trailing-slash redirect rule if Workers `_redirects` pattern support handles the required path shape.
+- `assets.html_handling` は `drop-trailing-slash` にする。
+- リダイレクトルールは `public/_redirects` に置き、Astro が `dist/_redirects` へコピーする形にする。
+- 既知の過去 URL には明示的な 301 リダイレクトルールを追加する。
+- Workers の `_redirects` パターンで必要な形を表現できる場合は、投稿 URL の末尾スラッシュ用 301 リダイレクトルールも追加する。
 
-This keeps deployment behavior declarative. A Worker script should only be introduced if verification proves that `_redirects` and `html_handling` cannot satisfy the 301 URL canonicalization requirement.
+これにより、配信時の挙動は宣言的な設定に収まる。検証の結果 `_redirects` と `html_handling` だけでは 301 による URL 正規化を満たせない場合に限り、Worker スクリプトを追加する。
 
-## Dependency and Runtime Changes
+## 依存関係とランタイムの変更
 
-Astro 6 and Wrangler 4 require a newer Node runtime than the project currently declares. The upgrade should include:
+Astro 6 と Wrangler 4 は、現在プロジェクトで宣言している Node より新しいランタイムを要求する。アップグレードには次を含める。
 
-- Updating `.node-version` to a Node 22 release compatible with Astro and Wrangler.
-- Updating `astro`, `@astrojs/*` packages, `wrangler`, `@cloudflare/workers-types`, TypeScript, and related tooling through `pnpm`.
-- Updating `pnpm-lock.yaml`.
-- Changing `preview` away from `wrangler pages dev ./dist` to a Workers Static Assets preview command.
+- `.node-version` を Astro と Wrangler に対応する Node 22 系へ更新する。
+- `pnpm` で `astro`、`@astrojs/*` パッケージ、`wrangler`、`@cloudflare/workers-types`、TypeScript、関連ツールを更新する。
+- `pnpm-lock.yaml` を更新する。
+- `preview` は `wrangler pages dev ./dist` ではなく、Workers Static Assets 用の preview コマンドへ変更する。
 
-Exact package versions should be resolved during implementation from npm rather than hard-coded from this design.
+具体的なパッケージバージョンは、この設計書に固定せず、実装時に npm から解決する。
 
-## URL Behavior
+## URL の挙動
 
-The canonical post URL form is:
+投稿 URL の正規形は次の通り。
 
 ```text
 /posts/example-slug
 ```
 
-The non-canonical form should permanently redirect:
+非正規形は恒久的にリダイレクトする。
 
 ```text
 /posts/example-slug/ -> /posts/example-slug
 ```
 
-The existing historical redirect must also remain permanent:
+既存の過去 URL リダイレクトも恒久的なリダイレクトとして維持する。
 
 ```text
 /posts/2022-11-06-google-cloud-sdk-release-notes-feed -> /posts/2022-11-06-google-cloud-cli-release-notes-feed
 ```
 
-The implementation should avoid changing article slugs or generated content paths beyond what is necessary for canonical URL handling.
+実装では、URL 正規化に必要な範囲を超えて記事 slug や生成されるコンテンツパスを変更しない。
 
-## Verification
+## 検証
 
-Implementation is complete only after these checks pass locally:
+実装完了とみなすには、ローカルで次の確認を通す。
 
 - `pnpm build`
-- Workers Static Assets preview starts successfully.
-- A normal page returns `200`.
-- `/posts/2022-11-06-google-cloud-sdk-release-notes-feed` returns `301` to the renamed post URL.
-- A post URL with a trailing slash returns `301` to the same URL without the trailing slash.
-- RSS and sitemap routes still return `200`.
+- Workers Static Assets の preview が正常に起動する。
+- 通常ページが `200` を返す。
+- `/posts/2022-11-06-google-cloud-sdk-release-notes-feed` が変更後の投稿 URL へ `301` を返す。
+- 末尾スラッシュ付きの投稿 URL が、同じ URL の末尾スラッシュなし形式へ `301` を返す。
+- RSS と sitemap のルートが引き続き `200` を返す。
 
-If local preview reveals that `html_handling` returns a non-301 status for the required canonicalization, or `_redirects` cannot express the general post trailing-slash rule, add the smallest possible Worker entrypoint that performs only URL normalization and delegates all asset serving to Static Assets.
+ローカル preview で、必要な正規化に対して `html_handling` が 301 以外を返すことが判明した場合、または `_redirects` で投稿 URL 全般の末尾スラッシュルールを表現できない場合は、URL 正規化だけを行い、静的アセット配信は Static Assets に委譲する最小限の Worker entrypoint を追加する。
 
-## Non-Goals
+## 対象外
 
-- No Astro SSR migration.
-- No `@astrojs/cloudflare` adapter unless a future feature needs runtime rendering.
-- No new blog features.
-- No unrelated redesign or content migration.
+- Astro SSR への移行はしない。
+- 将来の機能で実行時レンダリングが必要になるまで、`@astrojs/cloudflare` adapter は追加しない。
+- 新しいブログ機能は追加しない。
+- 関係のないデザイン変更やコンテンツ移行は行わない。
