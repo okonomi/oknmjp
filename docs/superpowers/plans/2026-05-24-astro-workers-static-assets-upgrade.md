@@ -1,28 +1,28 @@
-# Astro Workers Static Assets Upgrade Implementation Plan
+# Astro Workers Static Assets アップグレード実装計画
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **エージェント作業者向け:** 必須サブスキル: この計画をタスク単位で実装するには `superpowers:subagent-driven-development` 推奨、または `superpowers:executing-plans` を使う。進捗管理にはチェックボックス (`- [ ]`) を使う。
 
-**Goal:** Upgrade the static Astro blog to current tooling and deploy it with Cloudflare Workers Static Assets without turning it into an Astro SSR or Worker application.
+**目的:** 静的な Astro ブログを現在のツール群へ更新し、Astro SSR や Worker アプリケーションへ変えずに Cloudflare Workers Static Assets で配信する。
 
-**Architecture:** Astro remains a static site generator that writes `dist/`. Cloudflare Workers Static Assets serves `dist/` directly through `wrangler.jsonc`, with `_redirects` and `assets.html_handling` handling URL canonicalization. A Worker entrypoint is only added if local preview proves the declarative redirect setup cannot produce the required 301 responses.
+**アーキテクチャ:** Astro は `dist/` を出力する静的サイトジェネレータのまま維持する。Cloudflare Workers Static Assets は `wrangler.jsonc` を通じて `dist/` を直接配信し、URL 正規化は `_redirects` と `assets.html_handling` で処理する。ローカル preview で宣言的なリダイレクト設定では必要な 301 を返せないと確認できた場合に限り、Worker entrypoint を追加する。
 
-**Tech Stack:** Astro 6, Node 24 LTS, pnpm 10, Wrangler 4, Cloudflare Workers Static Assets, Cloudflare `_redirects`.
+**技術スタック:** Astro 6、Node 24 LTS、pnpm 10、Wrangler 4、Cloudflare Workers Static Assets、Cloudflare `_redirects`。
 
 ---
 
-## File Structure
+## ファイル構成
 
-- Modify `.node-version`: declare Node 24 LTS for local and CI build environments.
-- Modify `package.json`: update scripts and dependency ranges.
-- Modify `pnpm-lock.yaml`: lock the upgraded dependency graph after `pnpm` updates.
-- Modify `astro.config.mjs`: set static URL generation to the trailing-slash-free shape.
-- Create `wrangler.jsonc`: configure Workers Static Assets with `assets.directory = "./dist"` and `assets.html_handling = "drop-trailing-slash"`.
-- Modify `public/_redirects`: keep the existing legacy redirect and add post trailing-slash canonicalization if the rule works in local preview.
-- Delete `functions/posts/[[slug]].ts`: remove Pages Functions after its behavior is represented by Static Assets configuration and `_redirects`.
-- Delete `functions/tsconfig.json`: remove Pages Functions-only TypeScript config if no `functions/` files remain.
-- Optionally create `src/worker.ts`: only if declarative redirects cannot satisfy the required 301 behavior.
+- 変更 `.node-version`: ローカルと CI のビルド環境向けに Node 24 LTS を宣言する。
+- 変更 `package.json`: scripts と依存関係のバージョン範囲を更新する。
+- 変更 `pnpm-lock.yaml`: `pnpm` 更新後の依存グラフを固定する。
+- 変更 `astro.config.mjs`: 静的 URL 生成を末尾スラッシュなしの形にする。
+- 作成 `wrangler.jsonc`: `assets.directory = "./dist"` と `assets.html_handling = "drop-trailing-slash"` で Workers Static Assets を設定する。
+- 変更 `public/_redirects`: 既存の過去 URL リダイレクトを維持し、ローカル preview でルールが機能する場合は投稿 URL の末尾スラッシュ正規化を追加する。
+- 削除 `functions/posts/[[slug]].ts`: Pages Functions の挙動を Static Assets 設定と `_redirects` で表現できた後に削除する。
+- 削除 `functions/tsconfig.json`: `functions/` 配下のファイルがなくなる場合は、Pages Functions 専用の TypeScript 設定を削除する。
+- 任意で作成 `src/worker.ts`: 宣言的リダイレクトで必要な 301 を満たせない場合のみ追加する。
 
-## Task 1: Capture Baseline
+## Task 1: ベースライン確認
 
 **Files:**
 - Read: `.node-version`
@@ -31,7 +31,7 @@
 - Read: `public/_redirects`
 - Read: `functions/posts/[[slug]].ts`
 
-- [ ] **Step 1: Verify branch and worktree**
+- [ ] **Step 1: ブランチと作業ツリーを確認する**
 
 Run:
 
@@ -46,9 +46,9 @@ Expected:
 astro-workers-static-assets-upgrade
 ```
 
-`git status --short` may show the plan file if this plan is being committed in the same session. It should not show unrelated user changes.
+`git status --short` は、この計画ファイルを同じセッションでコミットする前であれば plan file を表示してよい。無関係なユーザー変更は表示されないこと。
 
-- [ ] **Step 2: Run the current build**
+- [ ] **Step 2: 現在のビルドを実行する**
 
 Run:
 
@@ -56,9 +56,9 @@ Run:
 pnpm build
 ```
 
-Expected: build either passes, or fails only because the current local Node version does not satisfy upgraded tooling requirements. Record the result before changing dependencies.
+Expected: ビルドが成功する、または現在のローカル Node バージョンが更新後ツールの要求を満たさないことだけを理由に失敗する。依存関係を変更する前に結果を記録する。
 
-- [ ] **Step 3: Commit the plan if it is not already committed**
+- [ ] **Step 3: 計画が未コミットならコミットする**
 
 Run:
 
@@ -67,24 +67,24 @@ git add docs/superpowers/plans/2026-05-24-astro-workers-static-assets-upgrade.md
 git commit -m "docs: add Astro Workers upgrade implementation plan"
 ```
 
-Expected: one docs-only commit.
+Expected: docs のみのコミットが 1 つ作成される。
 
-## Task 2: Upgrade Node and Dependencies
+## Task 2: Node と依存関係を更新する
 
 **Files:**
 - Modify: `.node-version`
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
 
-- [ ] **Step 1: Set Node 24 LTS**
+- [ ] **Step 1: Node 24 LTS を設定する**
 
-Edit `.node-version` to:
+`.node-version` を次の内容にする。
 
 ```text
 24.15.0
 ```
 
-- [ ] **Step 2: Update package versions from npm**
+- [ ] **Step 2: npm からパッケージバージョンを更新する**
 
 Run:
 
@@ -94,12 +94,12 @@ pnpm update astro @astrojs/check @astrojs/mdx @astrojs/rss @astrojs/sitemap @clo
 
 Expected:
 
-- `package.json` has `astro` in the latest 6.x range.
-- `wrangler` is in the latest 4.x range.
-- `pnpm-lock.yaml` is updated.
-- No `@astrojs/cloudflare` package is added.
+- `package.json` の `astro` が最新の 6.x 系になる。
+- `wrangler` が最新の 4.x 系になる。
+- `pnpm-lock.yaml` が更新される。
+- `@astrojs/cloudflare` は追加されない。
 
-- [ ] **Step 3: Inspect dependency changes**
+- [ ] **Step 3: 依存関係の差分を確認する**
 
 Run:
 
@@ -107,9 +107,9 @@ Run:
 git diff -- package.json pnpm-lock.yaml .node-version
 ```
 
-Expected: only runtime/tooling updates. There should be no new application framework or Cloudflare adapter dependency.
+Expected: ランタイムとツール更新だけが含まれる。新しいアプリケーションフレームワークや Cloudflare adapter 依存関係は追加されていないこと。
 
-- [ ] **Step 4: Commit dependency upgrade**
+- [ ] **Step 4: 依存関係更新をコミットする**
 
 Run:
 
@@ -118,18 +118,18 @@ git add .node-version package.json pnpm-lock.yaml
 git commit -m "chore: upgrade Astro tooling and Node"
 ```
 
-Expected: one commit containing only Node and dependency updates.
+Expected: Node と依存関係更新だけを含むコミットが 1 つ作成される。
 
-## Task 3: Configure Static Astro Output and Workers Static Assets
+## Task 3: 静的 Astro 出力と Workers Static Assets を設定する
 
 **Files:**
 - Modify: `astro.config.mjs`
 - Modify: `package.json`
 - Create: `wrangler.jsonc`
 
-- [ ] **Step 1: Set Astro trailing slash mode**
+- [ ] **Step 1: Astro の trailing slash mode を設定する**
 
-Update `astro.config.mjs` so the exported config contains `trailingSlash: "never"` alongside the existing `site` value:
+`astro.config.mjs` を更新し、既存の `site` と同じ階層に `trailingSlash: "never"` を含める。
 
 ```js
 export default defineConfig({
@@ -147,9 +147,9 @@ export default defineConfig({
 })
 ```
 
-- [ ] **Step 2: Add Workers Static Assets config**
+- [ ] **Step 2: Workers Static Assets 設定を追加する**
 
-Create `wrangler.jsonc`:
+`wrangler.jsonc` を作成する。
 
 ```jsonc
 {
@@ -163,17 +163,17 @@ Create `wrangler.jsonc`:
 }
 ```
 
-- [ ] **Step 3: Update preview script**
+- [ ] **Step 3: preview script を更新する**
 
-Change `package.json` scripts so `preview` uses Workers Static Assets instead of Pages:
+`package.json` の scripts を変更し、`preview` は Pages ではなく Workers Static Assets を使う。
 
 ```json
 "preview": "wrangler dev"
 ```
 
-Keep the existing `dev`, `lint`, `start`, `build`, and `astro` scripts.
+既存の `dev`、`lint`、`start`、`build`、`astro` scripts は維持する。
 
-- [ ] **Step 4: Build with the new config**
+- [ ] **Step 4: 新しい設定でビルドする**
 
 Run:
 
@@ -181,9 +181,9 @@ Run:
 pnpm build
 ```
 
-Expected: `astro check` and `astro build` pass, and `dist/` is regenerated.
+Expected: `astro check` と `astro build` が成功し、`dist/` が再生成される。
 
-- [ ] **Step 5: Commit static assets configuration**
+- [ ] **Step 5: 静的アセット設定をコミットする**
 
 Run:
 
@@ -192,34 +192,34 @@ git add astro.config.mjs package.json wrangler.jsonc
 git commit -m "chore: configure Workers Static Assets"
 ```
 
-Expected: one commit containing Astro config, Wrangler config, and script changes.
+Expected: Astro 設定、Wrangler 設定、script 変更を含むコミットが 1 つ作成される。
 
-## Task 4: Replace Pages Functions With Redirect Rules
+## Task 4: Pages Functions をリダイレクトルールに置き換える
 
 **Files:**
 - Modify: `public/_redirects`
 - Delete: `functions/posts/[[slug]].ts`
 - Delete: `functions/tsconfig.json`
 
-- [ ] **Step 1: Update `_redirects`**
+- [ ] **Step 1: `_redirects` を更新する**
 
-Set `public/_redirects` to:
+`public/_redirects` を次の内容にする。
 
 ```text
 /posts/2022-11-06-google-cloud-sdk-release-notes-feed /posts/2022-11-06-google-cloud-cli-release-notes-feed 301
 /posts/*/ /posts/:splat 301
 ```
 
-- [ ] **Step 2: Remove Pages Functions**
+- [ ] **Step 2: Pages Functions を削除する**
 
-Delete:
+次を削除する。
 
 ```text
 functions/posts/[[slug]].ts
 functions/tsconfig.json
 ```
 
-- [ ] **Step 3: Confirm no Pages Functions references remain**
+- [ ] **Step 3: Pages Functions 参照が残っていないことを確認する**
 
 Run:
 
@@ -227,9 +227,9 @@ Run:
 rg -n "PagesFunction|wrangler pages|functions/" package.json astro.config.mjs wrangler.jsonc functions src public docs
 ```
 
-Expected: no runtime references to Pages Functions remain. References in the approved spec or this plan are acceptable.
+Expected: Pages Functions への runtime 参照が残っていない。承認済み spec やこの plan 内の参照は許容する。
 
-- [ ] **Step 4: Build and inspect copied redirects**
+- [ ] **Step 4: ビルドしてコピーされた redirects を確認する**
 
 Run:
 
@@ -238,9 +238,9 @@ pnpm build
 cat dist/_redirects
 ```
 
-Expected: `dist/_redirects` contains both redirect rules from `public/_redirects`.
+Expected: `dist/_redirects` に `public/_redirects` の 2 つのリダイレクトルールが含まれる。
 
-- [ ] **Step 5: Commit redirect migration**
+- [ ] **Step 5: リダイレクト移行をコミットする**
 
 Run:
 
@@ -249,9 +249,9 @@ git add public/_redirects functions/posts/[[slug]].ts functions/tsconfig.json
 git commit -m "chore: replace Pages Functions with redirects"
 ```
 
-Expected: one commit removing Pages Functions and updating redirect rules.
+Expected: Pages Functions の削除とリダイレクトルール更新を含むコミットが 1 つ作成される。
 
-## Task 5: Verify Workers Static Assets Preview
+## Task 5: Workers Static Assets preview を検証する
 
 **Files:**
 - No planned source edits.
@@ -259,7 +259,7 @@ Expected: one commit removing Pages Functions and updating redirect rules.
 - Optional create: `src/worker.ts`
 - Optional modify: `wrangler.jsonc`
 
-- [ ] **Step 1: Start preview**
+- [ ] **Step 1: preview を起動する**
 
 Run:
 
@@ -267,19 +267,19 @@ Run:
 pnpm preview
 ```
 
-Expected: Wrangler starts a local dev server and prints a localhost URL. Keep it running for the following checks.
+Expected: Wrangler がローカル dev server を起動し、localhost URL を表示する。以降の確認のため起動したままにする。
 
-- [ ] **Step 2: Check normal page**
+- [ ] **Step 2: 通常ページを確認する**
 
-In another shell, replace `8787` if Wrangler prints a different port:
+別の shell で実行する。Wrangler が別ポートを表示した場合は `8787` を置き換える。
 
 ```bash
 curl -I http://localhost:8787/
 ```
 
-Expected: HTTP status `200`.
+Expected: HTTP status `200`。
 
-- [ ] **Step 3: Check RSS route**
+- [ ] **Step 3: RSS route を確認する**
 
 Run:
 
@@ -287,9 +287,9 @@ Run:
 curl -I http://localhost:8787/feed
 ```
 
-Expected: HTTP status `200` and `content-type` includes `application/rss+xml`.
+Expected: HTTP status `200` で、`content-type` に `application/rss+xml` が含まれる。
 
-- [ ] **Step 4: Check sitemap route**
+- [ ] **Step 4: sitemap route を確認する**
 
 Run:
 
@@ -297,9 +297,9 @@ Run:
 curl -I http://localhost:8787/sitemap-index.xml
 ```
 
-Expected: HTTP status `200`.
+Expected: HTTP status `200`。
 
-- [ ] **Step 5: Check legacy redirect**
+- [ ] **Step 5: 過去 URL リダイレクトを確認する**
 
 Run:
 
@@ -307,21 +307,21 @@ Run:
 curl -I http://localhost:8787/posts/2022-11-06-google-cloud-sdk-release-notes-feed
 ```
 
-Expected: HTTP status `301` and `location` is `/posts/2022-11-06-google-cloud-cli-release-notes-feed`.
+Expected: HTTP status `301` で、`location` が `/posts/2022-11-06-google-cloud-cli-release-notes-feed`。
 
-- [ ] **Step 6: Check trailing-slash redirect**
+- [ ] **Step 6: 末尾スラッシュのリダイレクトを確認する**
 
-Choose an existing generated post slug from `src/content/posts`, then run:
+`src/content/posts` から存在する生成済み投稿 slug を選び、次を実行する。
 
 ```bash
 curl -I http://localhost:8787/posts/2022-11-06-google-cloud-cli-release-notes-feed/
 ```
 
-Expected: HTTP status `301` and `location` is `/posts/2022-11-06-google-cloud-cli-release-notes-feed`.
+Expected: HTTP status `301` で、`location` が `/posts/2022-11-06-google-cloud-cli-release-notes-feed`。
 
-- [ ] **Step 7: If trailing-slash redirect fails, add the minimal Worker fallback**
+- [ ] **Step 7: 末尾スラッシュのリダイレクトが失敗した場合、最小 Worker fallback を追加する**
 
-Only perform this step if Step 6 does not return a 301. Create `src/worker.ts`:
+Step 6 が 301 を返さなかった場合のみ、この step を実行する。`src/worker.ts` を作成する。
 
 ```ts
 export default {
@@ -338,7 +338,7 @@ export default {
 } satisfies ExportedHandler<{ ASSETS: Fetcher }>
 ```
 
-Then update `wrangler.jsonc` to include the entrypoint:
+その後、`wrangler.jsonc` を entrypoint ありの設定へ更新する。
 
 ```jsonc
 {
@@ -354,25 +354,25 @@ Then update `wrangler.jsonc` to include the entrypoint:
 }
 ```
 
-Run `pnpm build` and restart `pnpm preview`, then repeat Steps 2 through 6.
+`pnpm build` を実行し、`pnpm preview` を再起動してから、Steps 2 から 6 を再実行する。
 
-- [ ] **Step 8: Commit verification-driven fallback only if needed**
+- [ ] **Step 8: 検証で必要になった場合のみ fallback をコミットする**
 
-If Step 7 was needed, run:
+Step 7 が必要だった場合は実行する。
 
 ```bash
 git add src/worker.ts wrangler.jsonc
 git commit -m "fix: canonicalize trailing slash URLs in Worker"
 ```
 
-Expected: commit exists only if the declarative Static Assets configuration could not satisfy the 301 requirement.
+Expected: 宣言的な Static Assets 設定では 301 要件を満たせなかった場合のみ、このコミットが存在する。
 
-## Task 6: Final Verification and Cleanup
+## Task 6: 最終検証と cleanup
 
 **Files:**
-- Modify: any file needed to fix issues found by verification.
+- Modify: 検証で見つかった問題を修正するために必要なファイル。
 
-- [ ] **Step 1: Run formatting check**
+- [ ] **Step 1: formatting check を実行する**
 
 Run:
 
@@ -380,9 +380,9 @@ Run:
 pnpm lint
 ```
 
-Expected: Prettier check passes.
+Expected: Prettier check が成功する。
 
-- [ ] **Step 2: Run production build**
+- [ ] **Step 2: production build を実行する**
 
 Run:
 
@@ -390,9 +390,9 @@ Run:
 pnpm build
 ```
 
-Expected: `astro check` and `astro build` pass.
+Expected: `astro check` と `astro build` が成功する。
 
-- [ ] **Step 3: Confirm no Cloudflare Pages deployment command remains**
+- [ ] **Step 3: Cloudflare Pages のデプロイコマンドが残っていないことを確認する**
 
 Run:
 
@@ -400,9 +400,9 @@ Run:
 rg -n "wrangler pages|PagesFunction|@astrojs/cloudflare" package.json pnpm-lock.yaml astro.config.mjs wrangler.jsonc src public functions
 ```
 
-Expected: no matches, unless `functions` no longer exists and `rg` reports it as missing. The project should not depend on `@astrojs/cloudflare`.
+Expected: `functions` が存在せず `rg` が missing path を報告する場合を除き、match しないこと。プロジェクトは `@astrojs/cloudflare` に依存しない。
 
-- [ ] **Step 4: Inspect final diff**
+- [ ] **Step 4: 最終差分を確認する**
 
 Run:
 
@@ -411,15 +411,15 @@ git status --short
 git diff --stat main...HEAD
 ```
 
-Expected: changes are limited to the approved upgrade scope: spec/plan docs, Node/tooling updates, Astro config, Wrangler config, redirects, and Pages Functions removal.
+Expected: 変更は承認済みアップグレード範囲に限られる。つまり spec/plan docs、Node/tooling 更新、Astro 設定、Wrangler 設定、redirects、Pages Functions 削除のみ。
 
-- [ ] **Step 5: Commit any final fixes**
+- [ ] **Step 5: 最終修正があればコミットする**
 
-If verification required small fixes, commit them:
+検証で小さな修正が必要だった場合はコミットする。
 
 ```bash
 git add .
 git commit -m "fix: complete Workers Static Assets migration"
 ```
 
-Expected: no commit if there were no additional fixes.
+Expected: 追加修正がなければコミットしない。
