@@ -26,7 +26,7 @@
     "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260524.1",
+    "@cloudflare/workers-types": "^4.20260525.1",
     "@tailwindcss/typography": "^0.5.19",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
