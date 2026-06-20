@@ -17,7 +17,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@types/markdown-it": "^14.1.1",
     "@types/sanitize-html": "^2.16.1",
-    "astro": "^6.3.7",
+    "astro": "^6.4.6",
     "date-fns": "^4.3.0",
     "markdown-it": "^14.2.0",
     "remark-breaks": "^4.0.0",
